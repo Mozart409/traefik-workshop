@@ -1,0 +1,22 @@
+api:
+  insecure: true
+  dashboard: true
+  debug: false
+
+entryPoints:
+  http:
+    address: ':80'
+  https:
+    address: ':443'
+  backend:
+    address: ':3000'
+
+providers:
+  docker:
+    endpoint: 'tcp://socket-proxy:2375'
+    # endpoint: 'var/run/user/1000/docker.sock'
+    watch: true
+    exposedbydefault: false
+# DOCKER_HOST=unix:///run/user/1000/docker.sock
+
+ping: {}
