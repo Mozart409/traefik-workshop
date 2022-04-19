@@ -10,6 +10,8 @@ entryPoints:
     address: ':443'
   backend:
     address: ':3000'
+  redis:
+    address: ':6379'
 
 providers:
   docker:
@@ -20,3 +22,6 @@ providers:
 # DOCKER_HOST=unix:///run/user/1000/docker.sock
 
 ping: {}
+
+pilot:
+  token: '53ba5e6e-3221-416a-b26b-306705587d89'
