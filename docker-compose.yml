@@ -48,8 +48,6 @@ services:
       - 'traefik.http.routers.whoami.entrypoints=http'
 
   ping:
-    depends_on:
-      - traefik
     build:
       context: apps/ping/
       dockerfile: Dockerfile
@@ -62,6 +60,20 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pingservices.rule=Host(`ping.docker.localhost`)'
       - 'traefik.http.routers.pingservices.entrypoints=http'
+
+  fastify:
+    build:
+      context: apps/fastify-redis/
+      dockerfile: Dockerfile
+    scale: 1
+    networks:
+      - proxy
+    ports:
+      - '4040:4040'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.fastify.rule=Host(`fastify.docker.localhost`)'
+      - 'traefik.http.routers.fastify.entrypoints=fastify'
 
 networks:
   proxy:

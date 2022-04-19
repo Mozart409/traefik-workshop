@@ -10,6 +10,8 @@ entryPoints:
     address: ':443'
   backend:
     address: ':3000'
+  fastify:
+    address: ':4040'
   redis:
     address: ':6379'
 
