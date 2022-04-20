@@ -28,6 +28,15 @@ services:
       # Traefik configuration file
       - ./traefik.yml:/traefik.yml
 
+  hoppscotch:
+    image: hoppscotch/hoppscotch:latest
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.hoppscotch.rule=Host(`hoppscotch.docker.localhost`)'
+      - 'traefik.http.routers.hoppscotch.entrypoints=http'
+
   redis:
     image: bitnami/redis:6.2
     environment:
@@ -72,8 +81,6 @@ services:
     scale: 3
     networks:
       - proxy
-    #ports:
-    #  - '3000:3000'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.pingservices.rule=Host(`ping.docker.localhost`)'
