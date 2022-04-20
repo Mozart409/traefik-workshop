@@ -6,10 +6,10 @@ const server: FastifyInstance = Fastify({ logger: true })
 
 try {
   server.register(fastifyRedis, {
-    host: 'localhost',
-    //host: 'redis.docker.localhost',
+    //host: 'localhost',
+    host: 'redis.docker.localhost',
     // password: 'your strong password here',
-    port: 6379, // Redis port
+    port: 80, // Redis port
   })
 } catch (error) {
   console.error(error)
