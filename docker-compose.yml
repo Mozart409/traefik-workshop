@@ -5,22 +5,14 @@ services:
     container_name: socket-proxy
     restart: unless-stopped
     volumes:
-      - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      # Linux only
+      # - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
     environment:
       CONTAINERS: 1
     networks:
       - proxy
-
-  redis:
-    image: bitnami/redis:6.2
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - '6379:6379'
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.redis.rule=Host(`redis.docker.localhost`)'
-      - 'traefik.http.routers.redis.entrypoints=redis'
 
   traefik:
     depends_on:
@@ -35,6 +27,19 @@ services:
     volumes:
       # Traefik configuration file
       - ./traefik.yml:/traefik.yml
+
+  redis:
+    image: bitnami/redis:6.2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.redis.rule=Host(`redis.docker.localhost`)'
+      - 'traefik.http.routers.redis.entrypoints=http'
 
   whoami:
     # A container that exposes an API to show its IP address

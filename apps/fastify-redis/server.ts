@@ -4,11 +4,16 @@ import fastifyRedis from 'fastify-redis'
 
 const server: FastifyInstance = Fastify({ logger: true })
 
-server.register(fastifyRedis, {
-  host: 'redis.docker.localhost',
-  // password: 'your strong password here',
-  port: 6379, // Redis port
-})
+try {
+  server.register(fastifyRedis, {
+    host: 'localhost',
+    //host: 'redis.docker.localhost',
+    // password: 'your strong password here',
+    port: 6379, // Redis port
+  })
+} catch (error) {
+  console.error(error)
+}
 
 const opts: RouteShorthandOptions = {
   schema: {
@@ -29,14 +34,14 @@ server.get('/ping', opts, async (request, reply) => {
   return { pong: 'it worked!' }
 })
 
-server.get('/foo', (req: any, reply) => {
+server.get('/cache', (req: any, reply) => {
   const { redis } = server
   redis.get(req.query.key, (err, val) => {
     reply.send(err || val)
   })
 })
 
-server.post('/foo', (req: any, reply) => {
+server.post('/cache', (req: any, reply) => {
   const { redis } = server
   redis.set(req.body.key, req.body.value, (err) => {
     reply.send(err || { status: 'ok' })
