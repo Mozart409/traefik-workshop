@@ -10,6 +10,10 @@ entryPoints:
     address: ':443'
   redis:
     address: ':6379'
+  postgres:
+    address: ':5432'
+  zipkin:
+    address: ':9411'
 
 providers:
   docker:
@@ -18,3 +22,9 @@ providers:
     exposedbydefault: false
 
 ping: {}
+
+tracing:
+  serviceName: traefik
+  spanNameLimit: 150
+  zipkin:
+    httpEndpoint: http://localhost:9411/api/v2/spans

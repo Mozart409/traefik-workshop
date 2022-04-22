@@ -10,6 +10,6 @@ FROM alpine:3.15 AS runner
 WORKDIR /app
 COPY --from=builder /app .
 
-EXPOSE 3000
+EXPOSE 3333
 
 CMD [ "./pingservice" ]
