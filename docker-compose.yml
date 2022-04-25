@@ -5,10 +5,10 @@ services:
     container_name: socket-proxy
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      #- /var/run/docker.sock:/var/run/docker.sock
 
       # Linux only
-      # - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
+      - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
     environment:
       CONTAINERS: 1
     networks:
@@ -37,6 +37,9 @@ services:
       - proxy
     ports:
       - 9411:9411
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.zipkin.rule=Host(`zipkin.docker.localhost`)'
 
   hoppscotch:
     image: hoppscotch/hoppscotch:latest
@@ -116,17 +119,17 @@ services:
       - 'traefik.http.routers.pingservices.rule=Host(`ping.docker.localhost`)'
       - 'traefik.http.routers.pingservices.entrypoints=http'
 
-#  nextjs:
-#    build:
-#      context: apps/nextjs-redis/
-#      dockerfile: Dockerfile
-#    scale: 3
-#    networks:
-#      - proxy
-#    labels:
-#      - 'traefik.enable=true'
-#      - 'traefik.http.routers.next.rule=Host(`next.docker.localhost`)'
-#      - 'traefik.http.routers.next.entrypoints=http'
+  nextjs:
+    build:
+      context: apps/nextjs-redis/
+      dockerfile: Dockerfile
+    scale: 3
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.next.rule=Host(`next.docker.localhost`)'
+      - 'traefik.http.routers.next.entrypoints=http'
 
 networks:
   proxy:
