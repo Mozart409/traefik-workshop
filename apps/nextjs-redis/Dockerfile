@@ -53,6 +53,6 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-ENV REDIS_URL redis://redis.docker.localhost
+ENV REDIS_URL redis://localhost:6379
 
 CMD ["node", "server.js"]

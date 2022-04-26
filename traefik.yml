@@ -8,10 +8,6 @@ entryPoints:
     address: ':80'
   https:
     address: ':443'
-  redis:
-    address: ':6379'
-  postgres:
-    address: ':5432'
   zipkin:
     address: ':9411'
 
@@ -20,6 +16,7 @@ providers:
     endpoint: 'tcp://socket-proxy:2375'
     watch: true
     exposedbydefault: false
+    network: 'proxy'
 
 ping: {}
 
