@@ -1,0 +1,17 @@
+{
+  "name": "fastify",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Mozart409",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fastify": "^3.28.0",
+    "fastify-zipkin": "^2.0.0",
+    "node-fetch": "^3.2.3",
+    "unfetch": "^4.2.0"
+  }
+}

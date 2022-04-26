@@ -41,6 +41,21 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.zipkin.rule=Host(`zipkin.docker.localhost`)'
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.22.0
+    ports:
+      - 6831:6831/udp # accept jaeger.thrift in compact Thrift protocol used by most current Jaeger clients
+      - 6832:6832/udp # accept jaeger.thrift in binary Thrift protocol used by Node.js Jaeger client (because thriftrw npm package does not support compact protocol)
+      - 5775:5775/udp # accept zipkin.thrift in compact Thrift protocol (deprecated; only used by very old Jaeger clients, circa 2016)
+      - 5778:5778 # serve configs, sampling strategies
+      - 16686:16686 # UI port
+      - 14269:14269 # collector admin port: health check at / and metrics at /metrics
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.jaeger.rule=Host(`jaeger.docker.localhost`)'
+
   hoppscotch:
     image: hoppscotch/hoppscotch:latest
     networks:
@@ -107,17 +122,29 @@ services:
       - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
       - 'traefik.http.routers.whoami.entrypoints=http'
 
-  ping:
+  fiboservice:
     build:
-      context: apps/ping/
+      context: apps/fiboService/
       dockerfile: Dockerfile
     scale: 3
     networks:
       - proxy
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.pingservices.rule=Host(`ping.docker.localhost`)'
-      - 'traefik.http.routers.pingservices.entrypoints=http'
+      - 'traefik.http.routers.fiboservice.rule=Host(`fibo.docker.localhost`)'
+      - 'traefik.http.routers.fiboservice.entrypoints=http'
+
+  jaegerservice:
+    build:
+      context: apps/jaegerService/
+      dockerfile: Dockerfile
+    scale: 3
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.jaegerservice.rule=Host(`demo.docker.localhost`)'
+      - 'traefik.http.routers.jaegerservice.entrypoints=http'
 
   nextjs:
     build:
