@@ -20,6 +20,13 @@ providers:
 
 ping: {}
 
+http:
+  middlewares:
+    test-ratelimit:
+      rateLimit:
+        average: 100
+        burst: 50
+
 tracing:
   serviceName: traefik
   spanNameLimit: 150
