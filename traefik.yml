@@ -25,4 +25,3 @@ tracing:
   spanNameLimit: 150
   zipkin:
     httpEndpoint: http://zipkin.docker.localhost:9411/api/v2/spans
-    sameSpan: true

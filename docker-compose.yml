@@ -59,8 +59,8 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
       - 'traefik.http.routers.whoami.entrypoints=http'
-      - 'traefik.http.middlewares.http-ratelimit.ratelimit.average=50'
-      - 'traefik.http.middlewares.http-ratelimit.ratelimit.burst=100'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.average=500'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.burst=1000'
       - 'traefik.http.middlewares.http-ratelimit.ratelimit.period=1'
       - 'traefik.http.routers.whoami.middlewares=http-ratelimit@docker'
 
