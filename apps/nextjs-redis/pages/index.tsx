@@ -191,7 +191,7 @@ export default function Roadmap({
 
       <main className="flex flex-col items-center justify-center flex-1 px-4 sm:px-20 text-center">
         <div className="flex justify-center items-center bg-black rounded-full w-16 sm:w-24 h-16 sm:h-24 my-8">
-          <img src="/upstash.svg" alt="Upstash Logo" className="h-8 sm:h-16" />
+          <img src="/redis.svg" alt="Redis Logo" className="h-8 sm:h-16" />
         </div>
         <h1 className="text-lg sm:text-2xl font-bold mb-2">
           Help us prioritize our roadmap
@@ -259,25 +259,14 @@ export default function Roadmap({
             <div className="flex flex-col sm:flex-row justify-between items-center">
               <p className="flex items-center my-8 w-full justify-center sm:justify-start">
                 Powered by
-                <img src="/vercel.svg" alt="Vercel Logo" className="h-5 mx-2" />
-                and
-                <img
-                  src="/upstash.svg"
-                  alt="Upstash Logo"
-                  className="h-5 mx-2"
-                />
+                <div className="bg-gray-800 rounded mx-2">
+                  <img
+                    src="/redis-with-text.svg"
+                    alt="Redis Logo"
+                    className="h-5 m-2 "
+                  />
+                </div>
               </p>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex rounded focus:outline-none focus:ring focus:ring-blue-300 mb-4 sm:mb-0 min-w-max"
-                href="https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-redis&project-name=redis-roadmap&repository-name=redis-roadmap&demo-title=Redis%20Roadmap&demo-description=Create%20and%20upvote%20features%20for%20your%20product.&demo-url=https%3A%2F%2Froadmap-redis.vercel.app%2F&integration-ids=oac_V3R1GIpkoJorr6fqyiwdhl17"
-              >
-                <img
-                  src="https://vercel.com/button"
-                  alt="Vercel Deploy Button"
-                />
-              </a>
             </div>
           </div>
         </div>

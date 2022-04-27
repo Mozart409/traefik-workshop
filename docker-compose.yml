@@ -24,6 +24,7 @@ services:
       - '8080:8080'
     networks:
       - proxy
+
     volumes:
       # Traefik configuration file
       - ./traefik.yml:/traefik.yml
@@ -38,41 +39,27 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.zipkin.rule=Host(`zipkin.docker.localhost`)'
 
-  adminer:
-    image: adminer:4-standalone
-    labels:
-      - 'traefik.enable=true'
-      #  - traefik.frontend.rule=Host:db-admin.your_domain
-      - 'traefik.http.routers.adminer.rule=Host(`adminer.docker.localhost`)'
-      - 'traefik.http.routers.adminer.entrypoints=http'
-    networks:
-      - internal
-      - proxy
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:latest
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    networks:
-      - internal
-    labels:
-      - 'traefik.enable=false'
-
   redis:
-    image: bitnami/redis:latest
+    image: bitnami/redis:6.2
+    ports:
+      - '6379:6379'
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
-      - internal
+      - proxy
     labels:
       - 'traefik.enable=false'
+
+  redisinsight:
+    image: redislabs/redisinsight
+    networks:
+      - proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.redisinsight.rule=Host(`redisinsight.docker.localhost`)'
+      - 'traefik.http.routers.redisinsight.entrypoints=http'
+
   whoami:
     # A container that exposes an API to show its IP address
     image: traefik/whoami
@@ -83,6 +70,10 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
       - 'traefik.http.routers.whoami.entrypoints=http'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.average=50'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.burst=100'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.period=1'
+      - 'traefik.http.routers.whoami.middlewares=http-ratelimit@docker'
 
   fiboservice:
     build:
@@ -101,18 +92,16 @@ services:
       context: apps/nextjs-redis/
       dockerfile: Dockerfile
     scale: 3
+    environment:
+      - REDIS_URL=redis://localhost:6379
     networks:
       - proxy
-      - internal
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=proxy'
-      - 'traefik.backend=nextjs'
       - 'traefik.http.routers.next.rule=Host(`next.docker.localhost`)'
       - 'traefik.http.routers.next.entrypoints=http'
 
 networks:
-  internal:
-    external: false
   proxy:
     external: true
+    driver: bridge

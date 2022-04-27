@@ -10,6 +10,8 @@ entryPoints:
     address: ':443'
   zipkin:
     address: ':9411'
+  redis:
+    address: ':6379'
 
 providers:
   docker:
@@ -18,17 +20,9 @@ providers:
     exposedbydefault: false
     network: 'proxy'
 
-ping: {}
-
-http:
-  middlewares:
-    test-ratelimit:
-      rateLimit:
-        average: 100
-        burst: 50
-
 tracing:
   serviceName: traefik
   spanNameLimit: 150
   zipkin:
     httpEndpoint: http://zipkin.docker.localhost:9411/api/v2/spans
+    sameSpan: true
