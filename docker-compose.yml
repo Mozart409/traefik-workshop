@@ -11,8 +11,6 @@ services:
       - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
     environment:
       CONTAINERS: 1
-    networks:
-      - proxy
 
   traefik:
     depends_on:
@@ -22,8 +20,6 @@ services:
       - '80:80'
       - '443:443'
       - '8080:8080'
-    networks:
-      - proxy
 
     volumes:
       # Traefik configuration file
@@ -31,8 +27,7 @@ services:
 
   zipkin:
     image: openzipkin/zipkin-slim
-    networks:
-      - proxy
+
     ports:
       - 9411:9411
     labels:
@@ -46,15 +41,11 @@ services:
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
-    networks:
-      - proxy
     labels:
-      - 'traefik.enable=false'
+      - 'traefik.enable=true'
 
   redisinsight:
     image: redislabs/redisinsight
-    networks:
-      - proxy
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.redisinsight.rule=Host(`redisinsight.docker.localhost`)'
@@ -64,8 +55,6 @@ services:
     # A container that exposes an API to show its IP address
     image: traefik/whoami
     scale: 3
-    networks:
-      - proxy
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
@@ -80,8 +69,6 @@ services:
       context: apps/fiboService/
       dockerfile: Dockerfile
     scale: 3
-    networks:
-      - proxy
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.fiboservice.rule=Host(`fibo.docker.localhost`)'
@@ -93,15 +80,8 @@ services:
       dockerfile: Dockerfile
     scale: 3
     environment:
-      - REDIS_URL=redis://localhost:6379
-    networks:
-      - proxy
+      - REDIS_URL=redis:6379
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.next.rule=Host(`next.docker.localhost`)'
       - 'traefik.http.routers.next.entrypoints=http'
-
-networks:
-  proxy:
-    external: true
-    driver: bridge

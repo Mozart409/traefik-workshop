@@ -19,6 +19,9 @@ providers:
     watch: true
     exposedbydefault: false
     network: 'proxy'
+  redis:
+    endpoints:
+      - 'redis:6379'
 
 tracing:
   serviceName: traefik
