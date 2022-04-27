@@ -1,0 +1,1 @@
+hey -n 10000 http://whoami.docker.localhost/

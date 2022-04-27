@@ -53,6 +53,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-ENV REDIS_URL redis://localhost:5555
-
 CMD ["node", "server.js"]
