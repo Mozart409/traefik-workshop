@@ -5,10 +5,9 @@ services:
     container_name: socket-proxy
 
     volumes:
-      #- /var/run/docker.sock:/var/run/docker.sock
-
+      - /var/run/docker.sock:/var/run/docker.sock
       # Linux only
-      - /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
+      #- /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
     environment:
       CONTAINERS: 1
 
@@ -59,8 +58,8 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
       - 'traefik.http.routers.whoami.entrypoints=http'
-      - 'traefik.http.middlewares.http-ratelimit.ratelimit.average=500'
-      - 'traefik.http.middlewares.http-ratelimit.ratelimit.burst=1000'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.average=1'
+      - 'traefik.http.middlewares.http-ratelimit.ratelimit.burst=2'
       - 'traefik.http.middlewares.http-ratelimit.ratelimit.period=1'
       - 'traefik.http.routers.whoami.middlewares=http-ratelimit@docker'
 
