@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    volumes:
+      # Docker Desktop (Windows or Mac OSX)
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Linux only
+      #- /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
+    environment:
+      CONTAINERS: 1
+
+  traefik:
+    depends_on:
+      - socket-proxy
+    image: traefik:2.6
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
+
+    volumes:
+      # Traefik configuration file
+      - ./traefik.yml:/traefik.yml
+
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: traefik/whoami
+    scale: 3
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
+      - 'traefik.http.routers.whoami.entrypoints=http'

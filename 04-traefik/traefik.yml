@@ -1,0 +1,17 @@
+api:
+  insecure: true
+  dashboard: true
+  debug: false
+
+entryPoints:
+  http:
+    address: ':80'
+  https:
+    address: ':443'
+
+providers:
+  docker:
+    endpoint: 'tcp://socket-proxy:2375'
+    watch: true
+    exposedbydefault: false
+    network: 'proxy'

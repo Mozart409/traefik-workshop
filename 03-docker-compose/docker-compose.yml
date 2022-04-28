@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  whoami:
+    image: traefik/whoami
+    ports:
+      - '8080:8080'
+
+  ## SAME as before, but with docker-compose
+  redis:
+    image: bitnami/redis:latest
+    ports:
+      - '6379:7000'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_PORT_NUMBER=7000
+    volumes:
+      - ./redis-data:/bitnami/redis/data
