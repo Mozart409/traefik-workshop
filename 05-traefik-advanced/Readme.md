@@ -1,6 +1,6 @@
 # 05 Traefik Advanced
 
-You have reached tha final step of this tutorial. Congrats.
+You have reached the final step of this tutorial. Congrats.
 
 ## Warning
 
@@ -67,7 +67,7 @@ Hide all logs from docker-compose
 
 Open the [Whoami](http://whoami.docker.localhost) website and press reload as fast as you can.
 
-#### Can I change the ratelimit of the whoami container
+#### Can I change the rate limit of the whoami container
 
 Yes. Just change the limit from
 
