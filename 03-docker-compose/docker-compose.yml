@@ -13,5 +13,3 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_PORT_NUMBER=7000
-    volumes:
-      - ./redis-data:/bitnami/redis/data
