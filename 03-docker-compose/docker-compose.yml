@@ -3,11 +3,11 @@ services:
   whoami:
     image: traefik/whoami
     ports:
-      - '8080:8080'
+      - '9999:80'
 
   ## SAME as before, but with docker-compose
   redis:
-    image: bitnami/redis:latest
+    image: bitnami/redis:6.2
     ports:
       - '6379:7000'
     environment:
