@@ -7,7 +7,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # If using npm with a `package-lock.json` comment out above and use below instead
-# COPY package.json package-lock.json ./ 
+# COPY package.json package-lock.json ./
 # RUN npm ci
 
 # Rebuild the source code only when needed
@@ -30,7 +30,7 @@ RUN yarn build
 FROM node:16-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -42,7 +42,7 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 
-# Automatically leverage output traces to reduce image size 
+# Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
@@ -51,6 +51,6 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+ENV PORT=3000
 
 CMD ["node", "server.js"]

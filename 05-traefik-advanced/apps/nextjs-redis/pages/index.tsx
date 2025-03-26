@@ -1,27 +1,27 @@
-import { useState, useRef } from 'react'
-import type { NextApiRequest } from 'next'
-import type { MouseEvent } from 'react'
-import Head from 'next/head'
-import clsx from 'clsx'
-import useSWR, { mutate } from 'swr'
-import toast from 'react-hot-toast'
-import redis from '../lib/redis'
+import clsx from "clsx";
+import type { NextApiRequest } from "next";
+import Head from "next/head";
+import { useRef, useState } from "react";
+import type { MouseEvent } from "react";
+import toast from "react-hot-toast";
+import useSWR, { mutate } from "swr";
+import redis from "../lib/redis";
 
 type Feature = {
-  id: string
-  title: string
-  score: number
-  ip: string
-}
+  id: string;
+  title: string;
+  score: number;
+  ip: string;
+};
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function LoadingSpinner({ invert }: { invert?: boolean }) {
   return (
     <svg
       className={clsx(
-        'animate-spin h-5 w-5 text-gray-900 dark:text-gray-100',
-        invert && 'text-gray-100 dark:text-gray-900'
+        "animate-spin h-5 w-5 text-gray-900 dark:text-gray-100",
+        invert && "text-gray-100 dark:text-gray-900",
       )}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -41,7 +41,7 @@ function LoadingSpinner({ invert }: { invert?: boolean }) {
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       />
     </svg>
-  )
+  );
 }
 
 function Item({
@@ -51,136 +51,136 @@ function Item({
   hasVoted,
   feature,
 }: {
-  isFirst: boolean
-  isLast: boolean
-  isReleased: boolean
-  hasVoted: boolean
-  feature: Feature
+  isFirst: boolean;
+  isLast: boolean;
+  isReleased: boolean;
+  hasVoted: boolean;
+  feature: Feature;
 }) {
   const upvote = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const res = await fetch('/api/vote', {
+    const res = await fetch("/api/vote", {
       body: JSON.stringify({
         id: feature.id,
         title: feature.title,
       }),
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
-    })
+      method: "POST",
+    });
 
-    const { error } = await res.json()
+    const { error } = await res.json();
     if (error) {
-      return toast.error(error)
+      return toast.error(error);
     }
 
-    mutate('/api/features')
-  }
+    mutate("/api/features");
+  };
 
   return (
     <div
       className={clsx(
-        'p-6 mx-8 flex items-center border-t border-l border-r',
-        isFirst && 'rounded-t-md',
-        isLast && 'border-b rounded-b-md'
+        "p-6 mx-8 flex items-center border-t border-l border-r",
+        isFirst && "rounded-t-md",
+        isLast && "border-b rounded-b-md",
       )}
     >
       <button
         className={clsx(
-          'ring-1 ring-gray-200 rounded-full w-8 min-w-[2rem] h-8 mr-4 focus:outline-none focus:ring focus:ring-blue-300',
-          (isReleased || hasVoted) &&
-            'bg-green-100 cursor-not-allowed ring-green-300'
+          "ring-1 ring-gray-200 rounded-full w-8 min-w-[2rem] h-8 mr-4 focus:outline-none focus:ring focus:ring-blue-300",
+          (isReleased || hasVoted)
+            && "bg-green-100 cursor-not-allowed ring-green-300",
         )}
         disabled={isReleased || hasVoted}
         onClick={upvote}
       >
-        {isReleased ? '✅' : '👍'}
+        {isReleased ? "✅" : "👍"}
       </button>
       <h3 className="text font-semibold w-full text-left">{feature.title}</h3>
       <div className="bg-gray-200 text-gray-700 text-sm rounded-xl px-2 ml-2">
         {feature.score}
       </div>
     </div>
-  )
+  );
 }
 
 export default function Roadmap({
   features,
   ip,
 }: {
-  features: Feature[]
-  ip: string
+  features: Feature[];
+  ip: string;
 }) {
-  const [isCreateLoading, setCreateLoading] = useState(false)
-  const [isEmailLoading, setEmailLoading] = useState(false)
-  const featureInputRef = useRef<HTMLInputElement>(null)
-  const subscribeInputRef = useRef<HTMLInputElement>(null)
+  const [isCreateLoading, setCreateLoading] = useState(false);
+  const [isEmailLoading, setEmailLoading] = useState(false);
+  const featureInputRef = useRef<HTMLInputElement>(null);
+  const subscribeInputRef = useRef<HTMLInputElement>(null);
 
-  const { data, error } = useSWR('/api/features', fetcher, {
+  const { data, error } = useSWR("/api/features", fetcher, {
     initialData: { features },
-  })
+  });
 
   if (error) {
-    toast.error(error)
+    toast.error(error);
   }
 
   const addFeature = async (e: MouseEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setCreateLoading(true)
+    e.preventDefault();
+    setCreateLoading(true);
 
-    const res = await fetch('/api/create', {
+    const res = await fetch("/api/create", {
       body: JSON.stringify({
-        title: featureInputRef?.current?.value ?? '',
+        title: featureInputRef?.current?.value ?? "",
       }),
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
-    })
+      method: "POST",
+    });
 
-    const { error } = await res.json()
-    setCreateLoading(false)
+    const { error } = await res.json();
+    setCreateLoading(false);
 
     if (error) {
-      toast.error(error)
-      return
+      toast.error(error);
+      return;
     }
 
-    mutate('/api/features')
+    mutate("/api/features");
     if (featureInputRef.current) {
-      featureInputRef.current.value = ''
+      featureInputRef.current.value = "";
     }
-  }
+  };
 
   const subscribe = async (e: MouseEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setEmailLoading(true)
+    e.preventDefault();
+    setEmailLoading(true);
 
-    const res = await fetch('/api/subscribe', {
+    const res = await fetch("/api/subscribe", {
       body: JSON.stringify({
-        email: subscribeInputRef?.current?.value ?? '',
+        email: subscribeInputRef?.current?.value ?? "",
       }),
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
-    })
+      method: "POST",
+    });
 
-    const { error } = await res.json()
-    setEmailLoading(false)
+    const { error } = await res.json();
+    setEmailLoading(false);
 
     if (error) {
-      return toast.error(error)
+      return toast.error(error);
     }
 
-    toast.success('You are now subscribed to feature updates!')
+    toast.success("You are now subscribed to feature updates!");
 
     if (subscribeInputRef.current) {
-      subscribeInputRef.current.value = ''
+      subscribeInputRef.current.value = "";
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -216,7 +216,7 @@ export default function Roadmap({
                 className="flex items-center justify-center absolute right-2 top-2 px-4 h-10 text-lg border bg-black text-white rounded-md w-24 focus:outline-none focus:ring focus:ring-blue-300 focus:bg-gray-800"
                 type="submit"
               >
-                {isCreateLoading ? <LoadingSpinner invert /> : 'Request'}
+                {isCreateLoading ? <LoadingSpinner invert /> : "Request"}
               </button>
             </form>
           </div>
@@ -235,8 +235,7 @@ export default function Roadmap({
           <hr className="border-1 border-gray-200 my-8 mx-8 w-full" />
           <div className="mx-8 w-full">
             <p className="flex text-gray-500">
-              Leave your email address here to be notified when feature requests
-              are released.
+              Leave your email address here to be notified when feature requests are released.
             </p>
             <form className="relative my-4" onSubmit={subscribe}>
               <input
@@ -253,7 +252,7 @@ export default function Roadmap({
                 className="flex items-center justify-center absolute right-2 top-2 px-4 h-10 border border-gray-200 text-gray-900 rounded-md w-14 focus:outline-none focus:ring focus:ring-blue-300 focus:bg-gray-100"
                 type="submit"
               >
-                {isEmailLoading ? <LoadingSpinner /> : 'OK'}
+                {isEmailLoading ? <LoadingSpinner /> : "OK"}
               </button>
             </form>
             <div className="flex flex-col sm:flex-row justify-between items-center">
@@ -272,25 +271,24 @@ export default function Roadmap({
         </div>
       </main>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps({ req }: { req: NextApiRequest }) {
-  const ip =
-    req.headers['x-forwarded-for'] || req.headers['Remote_Addr'] || 'NA'
-  const features = (await redis.hvals('features'))
+  const ip = req.headers["x-forwarded-for"] || req.headers["Remote_Addr"] || "NA";
+  const features = (await redis.hvals("features"))
     .map((entry) => JSON.parse(entry))
     .sort((a, b) => {
       // Primary sort is score
-      if (a.score > b.score) return -1
-      if (a.score < b.score) return 1
+      if (a.score > b.score) return -1;
+      if (a.score < b.score) return 1;
 
       // Secondary sort is title
-      if (a.title > b.title) return 1
-      if (a.title < b.title) return -1
+      if (a.title > b.title) return 1;
+      if (a.title < b.title) return -1;
 
-      return 1
-    })
+      return 1;
+    });
 
-  return { props: { features, ip } }
+  return { props: { features, ip } };
 }

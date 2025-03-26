@@ -8,7 +8,7 @@ You have reached the final step of this tutorial. Congrats.
 
 ```yaml
 # docker compose-yml
-version: '3.7'
+version: "3.7"
 services:
   socket-proxy:
     image: tecnativa/docker-socket-proxy
@@ -35,13 +35,13 @@ services:
 See all logs from docker compose
 
 ```bash
-  make dev
+make dev
 ```
 
 Hide all logs from docker compose
 
 ```bash
-  make start
+make start
 ```
 
 ## Websites

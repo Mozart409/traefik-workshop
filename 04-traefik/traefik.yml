@@ -5,13 +5,13 @@ api:
 
 entryPoints:
   http:
-    address: ':80'
+    address: ":80"
   https:
-    address: ':443'
+    address: ":443"
 
 providers:
   docker:
-    endpoint: 'tcp://socket-proxy:2375'
+    endpoint: "tcp://socket-proxy:2375"
     watch: true
     exposedbydefault: false
-    network: 'proxy'
+    network: "proxy"

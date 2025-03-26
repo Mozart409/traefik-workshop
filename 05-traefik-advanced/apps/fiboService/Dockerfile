@@ -12,4 +12,4 @@ COPY --from=builder /app .
 
 EXPOSE 3333
 
-CMD [ "./fiboService" ]
+CMD ["./fiboService"]

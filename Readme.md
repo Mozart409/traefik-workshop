@@ -13,6 +13,6 @@ Every project folder (01-05) contains an extra readme with further instructions.
 - Optional cli "make". You can start the each project with make start or copy the start command from the "makefile".
 
 ```bash
-  git clone https://github.com/Mozart409/traefik-workshop
-  cd traefik-workshop
+git clone https://github.com/Mozart409/traefik-workshop
+cd traefik-workshop
 ```

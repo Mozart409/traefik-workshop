@@ -1,14 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 
-import redis from '../../lib/redis'
+import redis from "../../lib/redis";
 
 export default async function getAllFeatures(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
-  const features = (await redis.hvals('features'))
+  const features = (await redis.hvals("features"))
     .map((entry) => JSON.parse(entry))
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.score - a.score);
 
-  res.status(200).json({ features })
+  res.status(200).json({ features });
 }

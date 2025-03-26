@@ -5,20 +5,20 @@ api:
 
 entryPoints:
   http:
-    address: ':80'
+    address: ":80"
   https:
-    address: ':443'
+    address: ":443"
   zipkin:
-    address: ':9411'
+    address: ":9411"
   redis:
-    address: ':6379'
+    address: ":6379"
 
 providers:
   docker:
-    endpoint: 'tcp://socket-proxy:2375'
+    endpoint: "tcp://socket-proxy:2375"
     watch: true
     exposedbydefault: false
-    network: 'proxy'
+    network: "proxy"
 
 tracing:
   serviceName: traefik

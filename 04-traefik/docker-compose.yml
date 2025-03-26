@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   socket-proxy:
     image: tecnativa/docker-socket-proxy
@@ -15,9 +15,9 @@ services:
       - socket-proxy
     image: traefik:2.6
     ports:
-      - '80:80'
-      - '443:443'
-      - '8080:8080'
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
 
     volumes:
       # Traefik configuration file
@@ -28,6 +28,6 @@ services:
     image: traefik/whoami
     scale: 3
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)'
-      - 'traefik.http.routers.whoami.entrypoints=http'
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+      - "traefik.http.routers.whoami.entrypoints=http"

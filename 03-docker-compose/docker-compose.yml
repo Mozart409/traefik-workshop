@@ -1,15 +1,15 @@
-version: '3.7'
+version: "3.7"
 services:
   whoami:
     image: traefik/whoami
     ports:
-      - '9999:80'
+      - "9999:80"
 
   ## SAME as before, but with docker compose
   redis:
     image: bitnami/redis:6.2
     ports:
-      - '6379:7000'
+      - "6379:7000"
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_PORT_NUMBER=7000
