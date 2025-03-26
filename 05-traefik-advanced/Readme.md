@@ -7,7 +7,7 @@ You have reached the final step of this tutorial. Congrats.
 > Depending on your os you need to change the docker socket to fit your system.
 
 ```yaml
-# docker-compose-yml
+# docker compose-yml
 version: '3.7'
 services:
   socket-proxy:
@@ -32,13 +32,13 @@ services:
 
 ## Start the project
 
-See all logs from docker-compose
+See all logs from docker compose
 
 ```bash
   make dev
 ```
 
-Hide all logs from docker-compose
+Hide all logs from docker compose
 
 ```bash
   make start

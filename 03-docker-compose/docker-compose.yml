@@ -5,7 +5,7 @@ services:
     ports:
       - '9999:80'
 
-  ## SAME as before, but with docker-compose
+  ## SAME as before, but with docker compose
   redis:
     image: bitnami/redis:6.2
     ports:

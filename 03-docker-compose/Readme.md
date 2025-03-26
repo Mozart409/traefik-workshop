@@ -1,6 +1,6 @@
 # 03 Docker Compose
 
-You have reached the docker-compose part.
+You have reached the docker compose part.
 
 ## Features
 
@@ -8,13 +8,13 @@ You have reached the docker-compose part.
 
 ## Start the project
 
-See all logs from docker-compose
+See all logs from docker compose
 
 ```bash
   make dev
 ```
 
-Hide all logs from docker-compose
+Hide all logs from docker compose
 
 ```bash
   make start

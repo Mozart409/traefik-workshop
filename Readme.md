@@ -1,6 +1,6 @@
 # Traefik Workshop
 
-This project shows why it is useful to use docker, docker-compose and traefik for local development instead of using native clis.
+This project shows why it is useful to use docker, docker compose and traefik for local development instead of using native clis.
 
 ## Documentation
 
