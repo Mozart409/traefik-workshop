@@ -7,7 +7,7 @@ services:
 
   ## SAME as before, but with docker compose
   redis:
-    image: bitnami/redis:6.2
+    image: soldevelo/redis:6.2
     ports:
       - "6379:7000"
     environment:
