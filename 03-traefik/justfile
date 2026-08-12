@@ -1,8 +1,8 @@
 start:
-	docker compose up --build -d
+	podman compose up --build -d
 
 dev:
-	docker compose up --build
+	podman compose up --build
 
 down:
-	docker compose down --remove-orphans
+	podman compose down --remove-orphans

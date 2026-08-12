@@ -1,6 +1,6 @@
 # 02 Docker Compose
 
-You have reached the docker compose part.
+You have reached the podman compose part.
 
 ## Features
 
@@ -8,13 +8,13 @@ You have reached the docker compose part.
 
 ## Start the project
 
-See all logs from docker compose
+See all logs from podman compose
 
 ```bash
 just dev
 ```
 
-Hide all logs from docker compose
+Hide all logs from podman compose
 
 ```bash
 just start

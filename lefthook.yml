@@ -8,7 +8,7 @@ pre-push:
     compose-lint:
       tags: [lint]
       run: >
-        yamllint 02-docker-compose/docker-compose.yml 03-traefik/docker-compose.yml 04-traefik-advanced/docker-compose.yml && docker-compose -f 02-docker-compose/docker-compose.yml config --quiet && docker-compose -f 03-traefik/docker-compose.yml config --quiet && docker-compose -f 04-traefik-advanced/docker-compose.yml config --quiet
+        yamllint 02-docker-compose/docker-compose.yml 03-traefik/docker-compose.yml 04-traefik-advanced/docker-compose.yml && podman-compose -f 02-docker-compose/docker-compose.yml config --quiet && podman-compose -f 03-traefik/docker-compose.yml config --quiet && podman-compose -f 04-traefik-advanced/docker-compose.yml config --quiet
     dprint:
       tags: [format]
       run: dprint fmt

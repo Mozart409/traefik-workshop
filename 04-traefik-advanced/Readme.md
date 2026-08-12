@@ -13,10 +13,10 @@ services:
     image: tecnativa/docker-socket-proxy
     container_name: socket-proxy
     volumes:
-      # Docker Desktop (Windows or Mac OSX)
+      # Podman Desktop (Windows or Mac OSX) - docker-compatible socket
       - /var/run/docker.sock:/var/run/docker.sock
       # Linux only
-      #- /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
+      #- /var/run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
 ```
 
 ## Features
@@ -31,13 +31,13 @@ services:
 
 ## Start the project
 
-See all logs from docker compose
+See all logs from podman compose
 
 ```bash
 just dev
 ```
 
-Hide all logs from docker compose
+Hide all logs from podman compose
 
 ```bash
 just start

@@ -29,15 +29,11 @@
           name = "traefik-workshop";
 
           packages = with pkgs;
-            [
-              # Container tools - core requirement for this workshop
-              docker
-              docker-compose
-            ]
-            ++ (
-              if !isDarwin
+            (
+              if isDarwin
+              # Use Podman on darwin - integrates with Podman Desktop
               then [podman podman-compose]
-              else []
+              else [docker docker-compose podman podman-compose]
             )
             ++ [
               # keep-sorted start
@@ -84,8 +80,11 @@
             echo "=================================================="
             echo ""
             echo "Available tools:"
-            echo "  - Docker & Docker Compose"
-            echo "  - Podman & Podman Compose (Docker alternative)"
+            ${
+              if isDarwin
+              then ''echo "  - Podman & Podman Compose"''
+              else ''echo "  - Docker & Docker Compose, Podman & Podman Compose"''
+            }
             echo "  - Kubernetes: kubectl, kind, minikube, helm"
             echo "  - Go (for fiboService)"
             echo "  - Node.js 22 (for Next.js app)"
