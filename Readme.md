@@ -10,7 +10,7 @@ Every project folder (01-05) contains an extra readme with further instructions.
 
 - Docker (Linux) or Docker Desktop (Windows, Mac OSX)
 - Clone this workshop via git
-- Optional cli "make". You can start the each project with make start or copy the start command from the "makefile".
+- Optional cli "just". You can start the each project with just start or copy the start command from the "justfile".
 
 ```bash
 git clone https://github.com/Mozart409/traefik-workshop

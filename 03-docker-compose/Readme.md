@@ -11,11 +11,11 @@ You have reached the docker compose part.
 See all logs from docker compose
 
 ```bash
-make dev
+just dev
 ```
 
 Hide all logs from docker compose
 
 ```bash
-make start
+just start
 ```
