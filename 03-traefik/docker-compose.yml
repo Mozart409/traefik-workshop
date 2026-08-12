@@ -1,31 +1,27 @@
 services:
   # keep-sorted start block=yes
-  socket-proxy:
-    image: tecnativa/docker-socket-proxy
-    volumes:
-      # Podman Desktop (Windows or Mac OSX) - docker-compatible socket
-      - /var/run/docker.sock:/var/run/docker.sock
-      # Linux only
-      #- /var/run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
-    container_name: socket-proxy
-    environment:
-      CONTAINERS: 1
-    networks:
-      proxy:
   traefik:
-    depends_on:
-      - socket-proxy
     image: traefik:v3.3
+    # The podman machine runs SELinux in enforcing mode, which blocks a
+    # container from talking to the bind-mounted podman socket. Disabling the
+    # label for this one container is safer than relabelling the host socket.
+    security_opt:
+      - label=disable
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
-
     networks:
       proxy:
     volumes:
       # Traefik configuration file
-      - ./traefik.yml:/traefik.yml
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      # Podman API socket. Traefik speaks the docker-compatible API, so no
+      # docker daemon and no socket-proxy sidecar are needed.
+      # Rootful podman machine (the default on macOS / Podman Desktop):
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      # Rootless podman instead? Use your own UID:
+      #- /run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
   whoami:
     # A container that exposes an API to show its IP address
     image: traefik/whoami

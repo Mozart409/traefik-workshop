@@ -4,20 +4,27 @@ You have reached the traefik part.
 
 ## Warning
 
-> Depending on your os you need to change the docker socket to fit your system.
+> Traefik discovers your containers by talking to the container API. It speaks
+> the docker-compatible API, so the podman socket works as-is — there is no
+> docker daemon and no socket-proxy sidecar involved. Depending on your setup
+> you may need to point the mount at a different socket.
 
 ```yaml
 # docker-compose.yml
 services:
-  socket-proxy:
-    image: tecnativa/docker-socket-proxy
-    container_name: socket-proxy
+  traefik:
+    security_opt:
+      - label=disable
     volumes:
-      # Podman Desktop (Windows or Mac OSX) - docker-compatible socket
-      - /var/run/docker.sock:/var/run/docker.sock
-      # Linux only
-      #- /var/run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
+      # Rootful podman machine (the default on macOS / Podman Desktop)
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      # Rootless podman instead? Use your own UID
+      #- /run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
 ```
+
+The podman machine runs SELinux in enforcing mode, which otherwise stops Traefik
+from reading that socket. `label=disable` turns the label check off for the
+traefik container only, which is nicer than relabelling the host's socket.
 
 ## Features
 
@@ -40,11 +47,21 @@ just start
 
 ## Websites
 
-- [Traefik](http://localhost:8080/dashboard)
-- [Whoami](http://whoami.docker.localhost)
+- [Traefik](http://localhost:8080/dashboard/) — the trailing slash is required
+- [Whoami](http://whoami.docker.localhost) — reload a few times to see the
+  hostname change
 
 ## FAQ
 
-#### Why are the no ports in the whoami contaier exposed
+#### Why are there no ports exposed in the whoami container
 
-Because Traefik takes care of that. Never define ports again. Scale to your desired amount and traefik automagically loadbalances them.
+Because Traefik takes care of that. Never define ports again. Scale to your
+desired amount and traefik automagically loadbalances them.
+
+#### How do I check what Traefik discovered
+
+```bash
+curl -s http://localhost:8080/api/http/services
+```
+
+The `whoami` service should list one server per replica, all `UP`.
