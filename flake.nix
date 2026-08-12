@@ -40,49 +40,42 @@
               else []
             )
             ++ [
-              cocogitto
-              keep-sorted
-              lefthook
-              just
-              # Kubernetes tools
-              kubectl
-              kind
-              minikube
-              kubernetes-helm
-
-              # Go - for the fiboService application
-              go
-
-              # Node.js - for the Next.js application
-              nodejs_22
-              pnpm
-
-              # Traefik - the main focus of this workshop
-              traefik
-
-              # Build tools mentioned in README
-              gnumake
+              # keep-sorted start
 
               # Code formatting (project has dprint.json)
               alejandra
-              dprint
-              yamllint
-
+              bat
+              cocogitto
               # API testing and debugging utilities
               curl
-              jq
-              httpie
-              wget
-
+              dprint
+              fd
               # Git (always useful)
               git
-
+              # Go - for the fiboService application
+              go
+              httpie
+              jq
+              just
+              keep-sorted
+              kind
+              # Kubernetes tools
+              kubectl
+              kubernetes-helm
+              lefthook
+              minikube
+              # Node.js - for the Next.js application
+              nodejs_22
+              pnpm
+              ripgrep
+              # Traefik - the main focus of this workshop
+              traefik
+              tree
               # Additional utilities
               watch
-              tree
-              bat
-              fd
-              ripgrep
+              wget
+              yamllint
+              # keep-sorted end
             ];
 
           shellHook = ''
@@ -97,7 +90,7 @@
             echo "  - Go (for fiboService)"
             echo "  - Node.js 22 (for Next.js app)"
             echo "  - Traefik"
-            echo "  - Make"
+            echo "  - just"
             echo "  - dprint (code formatter)"
             echo ""
             echo "Workshop folders:"

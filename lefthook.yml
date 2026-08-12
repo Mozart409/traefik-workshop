@@ -1,23 +1,24 @@
 pre-push:
   parallel: true
   commands:
-    just-fmt:
+    # keep-sorted start block=yes
+    alejandra:
       tags: [format]
-      run: just --fmt
-    dprint:
-      tags: [format]
-      run: dprint fmt
+      run: alejandra --check .
     compose-lint:
       tags: [lint]
       run: >
         yamllint 03-docker-compose/docker-compose.yml 04-traefik/docker-compose.yml 05-traefik-advanced/docker-compose.yml && docker-compose -f 03-docker-compose/docker-compose.yml config --quiet && docker-compose -f 04-traefik/docker-compose.yml config --quiet && docker-compose -f 05-traefik-advanced/docker-compose.yml config --quiet
-
-    alejandra:
+    dprint:
       tags: [format]
-      run: alejandra --check .
+      run: dprint fmt
+    just-fmt:
+      tags: [format]
+      run: just --fmt
     keep-sorted:
       tags: [sort]
-      run: keep-sorted --check
+      run: keep-sorted --mode lint {push_files}
+    # keep-sorted end
 commit-msg:
   commands:
     cog:
