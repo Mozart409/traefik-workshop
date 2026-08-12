@@ -43,6 +43,7 @@
               cocogitto
               keep-sorted
               lefthook
+              just
               # Kubernetes tools
               kubectl
               kind
