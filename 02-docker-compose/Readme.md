@@ -1,4 +1,4 @@
-# 03 Docker Compose
+# 02 Docker Compose
 
 You have reached the docker compose part.
 

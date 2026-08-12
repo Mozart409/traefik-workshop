@@ -4,7 +4,7 @@ This project shows why it is useful to use docker, docker compose and traefik fo
 
 ## Documentation
 
-Every project folder (01-05) contains an extra readme with further instructions.
+Every project folder (01-04) contains an extra readme with further instructions.
 
 ## Prerequisites
 
