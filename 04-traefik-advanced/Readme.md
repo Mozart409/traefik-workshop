@@ -34,7 +34,7 @@ traefik container only, which is nicer than relabelling the host's socket.
 - Golang Webserver
 - NextJS App to interact with Valkey
 - Whoami Container with rate-limiting
-- Jaeger Tracing
+- Jaeger Tracing, end to end from Traefik into both apps
 
 ## Start the project
 
@@ -85,10 +85,45 @@ traefik.http.middlewares.http-ratelimit.ratelimit.average=5
 traefik.http.middlewares.http-ratelimit.ratelimit.burst=20
 ```
 
-#### How do I view traces from traefik
+#### How do I view traces
 
 Hit one of the other sites first so there is something to trace, then open
-[Jaeger](http://jaeger.docker.localhost) and search for the `traefik` service.
+[Jaeger](http://jaeger.docker.localhost) and search for the `traefik`,
+`fiboservice` or `nextjs` service.
+
+Traefik propagates the W3C `traceparent` header to its backends and both apps
+read it, so one request is one connected trace instead of three unrelated ones.
+A `/fibonacci/:n` trace looks like this:
+
+```
+traefik      EntryPoint
+traefik      Router
+traefik      Service
+traefik      ReverseProxy
+fiboservice  /fibonacci/:n
+fiboservice  Fibonacci       <- the computation itself
+```
+
+The NextJS app is instrumented the same way, and because it also loads the
+ioredis instrumentation the Valkey command shows up as its own span:
+
+```
+traefik  ...
+nextjs   GET /api/features
+nextjs   executing api route (pages) /api/features
+nextjs   hvals            <- the Valkey call
+```
+
+#### How are the apps instrumented
+
+`fiboService` builds an OTLP exporter in `main.go` and registers the `otelfiber`
+middleware. The NextJS app uses Next's `instrumentation.ts` hook with
+`@vercel/otel`. Neither hardcodes the collector address — both read
+`OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_SERVICE_NAME` from `docker-compose.yml`.
+
+The non-obvious part is the propagator. Without registering the W3C TraceContext
+propagator, the app spans still reach Jaeger but start their own trace, and you
+lose the link back to Traefik.
 
 #### Why Jaeger and not Zipkin
 

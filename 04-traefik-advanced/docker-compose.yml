@@ -5,6 +5,9 @@ services:
       context: apps/fiboService/
       dockerfile: Dockerfile
     scale: 3
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+      - OTEL_SERVICE_NAME=fiboservice
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fiboservice.rule=Host(`fibo.docker.localhost`)"
@@ -36,6 +39,8 @@ services:
     scale: 3
     environment:
       - REDIS_URL=valkey:6379
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+      - OTEL_SERVICE_NAME=nextjs
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.next.rule=Host(`next.docker.localhost`)"
