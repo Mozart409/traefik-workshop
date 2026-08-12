@@ -14,7 +14,11 @@ pre-push:
       run: dprint fmt
     just-fmt:
       tags: [format]
-      run: just --fmt
+      # Bare `just --fmt` only formats the justfile in the current directory -
+      # the root one, which works without --unstable only because it sets it
+      # itself. Loop so every workshop folder's justfile is formatted too.
+      run: >
+        for f in justfile */justfile; do just --unstable --fmt --justfile "$f"; done
     keep-sorted:
       tags: [sort]
       run: keep-sorted --mode lint {push_files}
