@@ -1,13 +1,20 @@
 services:
   # keep-sorted start block=yes
   ## SAME as before, but with docker compose
+  rediscommander:
+    image: ghcr.io/joeferner/redis-commander:latest
+    environment:
+      - REDIS_HOST=valkey
+      - REDIS_PORT=7000
+    ports:
+      - "8081:8081"
+    depends_on:
+      - valkey
   valkey:
-    image: bitnami/valkey:latest
+    image: valkey/valkey:latest
+    command: valkey-server --port 7000
     ports:
       - "6379:7000"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - VALKEY_PORT_NUMBER=7000
   whoami:
     image: traefik/whoami
     ports:
