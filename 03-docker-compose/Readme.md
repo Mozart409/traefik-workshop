@@ -4,7 +4,7 @@ You have reached the docker compose part.
 
 ## Features
 
-- Single Whoami Container
+- Single Whoami Container with Valkey backend
 
 ## Start the project
 

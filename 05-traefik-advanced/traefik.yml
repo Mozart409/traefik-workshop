@@ -10,7 +10,7 @@ entryPoints:
     address: ":443"
   zipkin:
     address: ":9411"
-  redis:
+  valkey:
     address: ":6379"
 
 providers:

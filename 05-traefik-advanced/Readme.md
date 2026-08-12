@@ -23,10 +23,10 @@ services:
 ## Features
 
 - Traefik
-- Redis
+- Valkey
 - Redis Insight
 - Golang Webserver
-- NextJS App to interact with Redis
+- NextJS App to interact with Valkey
 - Whoami Container with rate-limiting
 - Zipkin Tracing
 
@@ -59,7 +59,7 @@ make start
 
 1. Open the - [Redisinsight](http://redisinsight.docker.localhost) website, accept the EULA and click on "I already have a database".
 2. Click on "Connect to a Redis Database". "Using hostname and port"
-3. Copy this connection url **redis:6379** and insert it into the "Host" field
+3. Copy this connection url **valkey:6379** and insert it into the "Host" field
    ![RedisInsight](./images/redisinsight.PNG)
 4. Press "ADD REDIS DATABASE"
 

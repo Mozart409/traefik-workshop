@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import redis from "../../lib/redis";
+import redis from "../../lib/valkey";
 
 export default async function subscribe(
   req: NextApiRequest,

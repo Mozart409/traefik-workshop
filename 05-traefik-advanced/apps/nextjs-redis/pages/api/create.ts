@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 
-import redis from "../../lib/redis";
+import redis from "../../lib/valkey";
 
 export default async function create(
   req: NextApiRequest,

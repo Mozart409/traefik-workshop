@@ -1,5 +1,5 @@
-version: "3.7"
 services:
+  # keep-sorted start block=yes
   socket-proxy:
     image: tecnativa/docker-socket-proxy
     volumes:
@@ -7,27 +7,37 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       # Linux only
       #- /var/run/user/1000/docker.sock:/var/run/docker.sock:ro
+    container_name: socket-proxy
     environment:
       CONTAINERS: 1
-
+    networks:
+      proxy:
   traefik:
     depends_on:
       - socket-proxy
-    image: traefik:2.6
+    image: traefik:v3.3
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
 
+    networks:
+      proxy:
     volumes:
       # Traefik configuration file
       - ./traefik.yml:/traefik.yml
-
   whoami:
     # A container that exposes an API to show its IP address
     image: traefik/whoami
     scale: 3
+    networks:
+      proxy:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
       - "traefik.http.routers.whoami.entrypoints=http"
+  # keep-sorted end
+
+networks:
+  proxy:
+    name: proxy

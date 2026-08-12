@@ -2,10 +2,10 @@ import clsx from "clsx";
 import type { NextApiRequest } from "next";
 import Head from "next/head";
 import { useRef, useState } from "react";
-import type { MouseEvent } from "react";
+import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
-import redis from "../lib/redis";
+import redis from "../lib/valkey";
 
 type Feature = {
   id: string;
@@ -57,7 +57,7 @@ function Item({
   hasVoted: boolean;
   feature: Feature;
 }) {
-  const upvote = async (e: MouseEvent<HTMLButtonElement>) => {
+  const upvote = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const res = await fetch("/api/vote", {
@@ -119,14 +119,14 @@ export default function Roadmap({
   const subscribeInputRef = useRef<HTMLInputElement>(null);
 
   const { data, error } = useSWR("/api/features", fetcher, {
-    initialData: { features },
+    fallbackData: { features },
   });
 
   if (error) {
     toast.error(error);
   }
 
-  const addFeature = async (e: MouseEvent<HTMLFormElement>) => {
+  const addFeature = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCreateLoading(true);
 
@@ -154,7 +154,7 @@ export default function Roadmap({
     }
   };
 
-  const subscribe = async (e: MouseEvent<HTMLFormElement>) => {
+  const subscribe = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setEmailLoading(true);
 

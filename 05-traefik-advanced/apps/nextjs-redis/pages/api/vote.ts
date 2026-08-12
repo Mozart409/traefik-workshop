@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import redis from "../../lib/redis";
+import redis from "../../lib/valkey";
 
 export default async function upvote(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   const { title, id } = req.body;
-  const ip = req.headers["x-forwarded-for"] || req.headers["Remote_Addr"] || "NA";
+  const ip = (req.headers["x-forwarded-for"] || req.headers["Remote_Addr"] || "NA") as string;
   const count = ip === "NA" ? 1 : await redis.sadd("s:" + title, ip);
 
   if (count === 0) {
