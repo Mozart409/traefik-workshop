@@ -125,6 +125,12 @@ The non-obvious part is the propagator. Without registering the W3C TraceContext
 propagator, the app spans still reach Jaeger but start their own trace, and you
 lose the link back to Traefik.
 
+#### Jaeger UI Screenshots
+
+![Jaeger Service Overview](./images/jaeger-1.png)
+
+![Jaeger Trace Details](./images/jaeger-2.png)
+
 #### Why Jaeger and not Zipkin
 
 Traefik v3 removed the per-vendor tracing backends (zipkin, jaeger, datadog,
