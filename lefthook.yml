@@ -1,0 +1,26 @@
+pre-push:
+  parallel: true
+  commands:
+    dprint:
+      tags: [format]
+      run: dprint check
+    compose-lint:
+      tags: [lint]
+      run: >
+        yamllint 03-docker-compose/docker-compose.yml
+        04-traefik/docker-compose.yml
+        05-traefik-advanced/docker-compose.yml
+        && docker-compose -f 03-docker-compose/docker-compose.yml config --quiet
+        && docker-compose -f 04-traefik/docker-compose.yml config --quiet
+        && docker-compose -f 05-traefik-advanced/docker-compose.yml config --quiet
+    alejandra:
+      tags: [format]
+      run: alejandra --check .
+    keep-sorted:
+      tags: [sort]
+      run: keep-sorted --check
+
+commit-msg:
+  commands:
+    cog:
+      run: cog verify --file {1}
