@@ -4,30 +4,37 @@ You have reached the final step of this tutorial. Congrats.
 
 ## Warning
 
-> Depending on your os you need to change the docker socket to fit your system.
+> Traefik discovers your containers by talking to the container API. It speaks
+> the docker-compatible API, so the podman socket works as-is — there is no
+> docker daemon and no socket-proxy sidecar involved. Depending on your setup
+> you may need to point the mount at a different socket.
 
 ```yaml
 # docker-compose.yml
 services:
-  socket-proxy:
-    image: tecnativa/docker-socket-proxy
-    container_name: socket-proxy
+  traefik:
+    security_opt:
+      - label=disable
     volumes:
-      # Podman Desktop (Windows or Mac OSX) - docker-compatible socket
-      - /var/run/docker.sock:/var/run/docker.sock
-      # Linux only
-      #- /var/run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
+      # Rootful podman machine (the default on macOS / Podman Desktop)
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      # Rootless podman instead? Use your own UID
+      #- /run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
 ```
+
+The podman machine runs SELinux in enforcing mode, which otherwise stops Traefik
+from reading that socket. `label=disable` turns the label check off for the
+traefik container only, which is nicer than relabelling the host's socket.
 
 ## Features
 
 - Traefik
 - Valkey
-- Redis Insight
+- Redis Commander
 - Golang Webserver
 - NextJS App to interact with Valkey
 - Whoami Container with rate-limiting
-- Zipkin Tracing
+- Jaeger Tracing
 
 ## Start the project
 
@@ -45,26 +52,22 @@ just start
 
 ## Websites
 
-- [Traefik](http://localhost:8080/dashboard)
-- [Redisinsight](http://redisinsight.docker.localhost)
+- [Traefik](http://localhost:8080/dashboard/) — the trailing slash is required
+- [Redis Commander](http://rediscommander.docker.localhost)
 - [Whoami](http://whoami.docker.localhost)
 - [Fibonacci](http://fibo.docker.localhost)
 - [NextJS](http://next.docker.localhost)
-- [Zipkin](http://zipkin.docker.localhost:9411/zipkin/)
+- [Jaeger](http://jaeger.docker.localhost)
 
 ## FAQ
 
-#### How do I inspect the redis image with redisinsight
+#### How do I inspect the redis image with redis commander
 
-1. Open the - [Redisinsight](http://redisinsight.docker.localhost) website, accept the EULA and click on "I already have a database".
-2. Click on "Connect to a Redis Database". "Using hostname and port"
-3. Copy this connection url **valkey:6379** and insert it into the "Host" field
-   ![RedisInsight](./images/redisinsight.PNG)
-4. Press "ADD REDIS DATABASE"
+Open the [Redis Commander](http://rediscommander.docker.localhost) website. It's pre-configured via the `REDIS_HOST`/`REDIS_PORT` environment variables to connect straight to `valkey:6379`, so the keyspace is visible immediately, no setup required.
 
 #### How do I hit the rate-limit
 
-Open the [Whoami](http://whoami.docker.localhost) website and press reload as fast as you can.
+Open the [Whoami](http://whoami.docker.localhost) website and press reload as fast as you can. You should start seeing `429 Too Many Requests`.
 
 #### Can I change the rate limit of the whoami container
 
@@ -84,6 +87,27 @@ traefik.http.middlewares.http-ratelimit.ratelimit.burst=20
 
 #### How do I view traces from traefik
 
-Open the [Whoami](http://zipkin.docker.localhost:9411/zipkin/) website and press the read + button.
-Click serviceName and enter traefik.
-![Zipkin](./images/zipkin.PNG)
+Hit one of the other sites first so there is something to trace, then open
+[Jaeger](http://jaeger.docker.localhost) and search for the `traefik` service.
+
+#### Why Jaeger and not Zipkin
+
+Traefik v3 removed the per-vendor tracing backends (zipkin, jaeger, datadog,
+instana, haystack) and speaks OpenTelemetry only. Leaving a `tracing.zipkin`
+block in `traefik.yml` makes Traefik refuse to start:
+
+```
+command traefik error: field not found, node: spanNameLimit
+```
+
+Jaeger all-in-one ingests OTLP natively on `:4318`, so Traefik exports straight
+to it with no collector in between:
+
+```yaml
+# traefik.yml
+tracing:
+  serviceName: traefik
+  otlp:
+    http:
+      endpoint: http://jaeger:4318/v1/traces
+```

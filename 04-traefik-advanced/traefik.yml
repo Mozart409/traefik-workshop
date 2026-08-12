@@ -8,20 +8,17 @@ entryPoints:
     address: ":80"
   https:
     address: ":443"
-  zipkin:
-    address: ":9411"
-  valkey:
-    address: ":6379"
 
 providers:
   docker:
-    endpoint: "tcp://socket-proxy:2375"
     watch: true
-    exposedbydefault: false
+    exposedByDefault: false
     network: "proxy"
 
+# Traefik v3 dropped the per-vendor tracing backends (zipkin, jaeger, datadog,
+# ...) and speaks OpenTelemetry only. Jaeger ingests OTLP natively on :4318.
 tracing:
   serviceName: traefik
-  spanNameLimit: 150
-  zipkin:
-    httpEndpoint: http://zipkin.docker.localhost:9411/api/v2/spans
+  otlp:
+    http:
+      endpoint: http://jaeger:4318/v1/traces

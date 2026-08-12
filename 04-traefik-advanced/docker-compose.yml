@@ -10,9 +10,23 @@ services:
       - "traefik.http.routers.fiboservice.rule=Host(`fibo.docker.localhost`)"
       - "traefik.http.routers.fiboservice.entrypoints=http"
     depends_on:
-      - socket-proxy
       - traefik
       - valkey
+    networks:
+      - proxy
+  jaeger:
+    # Receives OTLP traces from Traefik on :4318 and serves the UI on :16686.
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jaeger.rule=Host(`jaeger.docker.localhost`)"
+      - "traefik.http.routers.jaeger.entrypoints=http"
+      # all-in-one exposes several ports, so Traefik needs to be told which one
+      - "traefik.http.services.jaeger.loadbalancer.server.port=16686"
+    depends_on:
+      - traefik
     networks:
       - proxy
   nextjs:
@@ -27,54 +41,54 @@ services:
       - "traefik.http.routers.next.rule=Host(`next.docker.localhost`)"
       - "traefik.http.routers.next.entrypoints=http"
     depends_on:
-      - socket-proxy
       - traefik
       - valkey
     networks:
       - proxy
-  redisinsight:
-    image: redis/redisinsight:latest
+  rediscommander:
+    image: ghcr.io/joeferner/redis-commander:latest
+    environment:
+      - REDIS_HOST=valkey
+      - REDIS_PORT=6379
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.redisinsight.rule=Host(`redisinsight.docker.localhost`)"
-      - "traefik.http.routers.redisinsight.entrypoints=http"
+      - "traefik.http.routers.rediscommander.rule=Host(`rediscommander.docker.localhost`)"
+      - "traefik.http.routers.rediscommander.entrypoints=http"
+      - "traefik.http.services.rediscommander.loadbalancer.server.port=8081"
     depends_on:
-      - socket-proxy
       - traefik
       - valkey
-    networks:
-      - proxy
-  socket-proxy:
-    image: tecnativa/docker-socket-proxy
-    container_name: socket-proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      CONTAINERS: 1
     networks:
       - proxy
   traefik:
-    depends_on:
-      - socket-proxy
     image: traefik:v3.3
+    # The podman machine runs SELinux in enforcing mode, which blocks a
+    # container from talking to the bind-mounted podman socket. Disabling the
+    # label for this one container is safer than relabelling the host socket.
+    security_opt:
+      - label=disable
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
-      - ./traefik.yml:/traefik.yml
+      # Traefik configuration file
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      # Podman API socket. Traefik speaks the docker-compatible API, so no
+      # docker daemon and no socket-proxy sidecar are needed.
+      # Rootful podman machine (the default on macOS / Podman Desktop):
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
+      # Rootless podman instead? Use your own UID:
+      #- /run/user/1000/podman/podman.sock:/var/run/docker.sock:ro
     networks:
       - proxy
   valkey:
-    image: bitnami/valkey:latest
+    image: valkey/valkey:latest
     ports:
       - "6379:6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
     labels:
       - "traefik.enable=true"
     depends_on:
-      - socket-proxy
       - traefik
     networks:
       - proxy
@@ -90,19 +104,6 @@ services:
       - "traefik.http.middlewares.http-ratelimit.ratelimit.period=1"
       - "traefik.http.routers.whoami.middlewares=http-ratelimit@docker"
     depends_on:
-      - socket-proxy
-      - traefik
-    networks:
-      - proxy
-  zipkin:
-    image: openzipkin/zipkin-slim
-    ports:
-      - 9411:9411
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.zipkin.rule=Host(`zipkin.docker.localhost`)"
-    depends_on:
-      - socket-proxy
       - traefik
     networks:
       - proxy
