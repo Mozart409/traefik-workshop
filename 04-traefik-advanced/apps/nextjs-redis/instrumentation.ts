@@ -1,5 +1,5 @@
-import { registerOTel } from "@vercel/otel";
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis";
+import { registerOTel } from "@vercel/otel";
 
 export function register() {
   registerOTel({
